@@ -21,9 +21,7 @@
   },
   "homepage": "https://github.com/rhaldkhein/react-jservice#readme",
   "dependencies": {
-    "events": "^3.0.0",
-    "jservice": "^0.1.20",
-    "lodash.keyby": "^4.6.0",
+    "jservice": "^0.1.21",
     "lodash.set": "^4.3.2",
     "react-redux": "^7.0.3",
     "redux": "^4.0.1"

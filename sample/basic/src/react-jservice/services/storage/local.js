@@ -12,18 +12,17 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 /**
- * This is a polyfill for asyncStorage that's 
- * using localStorage
+ * A polyfill for asyncStorage that uses localStorage
  */
 var Storage =
 /*#__PURE__*/
 function () {
-  function Storage(key) {
+  function Storage() {
     _classCallCheck(this, Storage);
 
     try {
-      localStorage.setItem(key, 'LS');
-      localStorage.removeItem(key);
+      localStorage.setItem('____', '');
+      localStorage.removeItem('____');
       this.available = true;
     } catch (e) {
       this.available = false;

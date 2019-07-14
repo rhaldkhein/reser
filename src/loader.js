@@ -1,4 +1,4 @@
-import { _isFunction, _isConstructor } from './misc/util'
+import { isFunction, isConstructor } from './services/util'
 
 /**
  * Responsible for loading an async module.
@@ -35,12 +35,12 @@ class Loader {
     // Continue fetching and creating instance
     this._loading = this._fetch().then(Service => {
       let result
-      if (_isConstructor(Service)) {
+      if (isConstructor(Service)) {
         result = new Service(
           this._provider,
           this._config && this._config(this._provider)
         )
-      } else if (_isFunction(Service)) {
+      } else if (isFunction(Service)) {
         result = Service()
       } else {
         result = Service

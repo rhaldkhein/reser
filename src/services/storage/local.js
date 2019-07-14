@@ -1,15 +1,14 @@
 
 /**
- * This is a polyfill for asyncStorage that's 
- * using localStorage
+ * A polyfill for asyncStorage that uses localStorage
  */
 
 class Storage {
 
-  constructor(key) {
+  constructor() {
     try {
-      localStorage.setItem(key, 'LS')
-      localStorage.removeItem(key)
+      localStorage.setItem('____', '')
+      localStorage.removeItem('____')
       this.available = true
     } catch (e) {
       this.available = false

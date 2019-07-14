@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _util = require("./misc/util");
+var _util = require("./services/util");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -59,9 +59,9 @@ function () {
       this._loading = this._fetch().then(function (Service) {
         var result;
 
-        if ((0, _util._isConstructor)(Service)) {
+        if ((0, _util.isConstructor)(Service)) {
           result = new Service(_this2._provider, _this2._config && _this2._config(_this2._provider));
-        } else if ((0, _util._isFunction)(Service)) {
+        } else if ((0, _util.isFunction)(Service)) {
           result = Service();
         } else {
           result = Service;

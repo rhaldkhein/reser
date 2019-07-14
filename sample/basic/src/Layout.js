@@ -1,12 +1,12 @@
 import React from 'react'
 import Home from './Home'
-import { withService } from './react-jservice';
+import { withService, andState } from './react-jservice';
 
-function Layout({ services: { async } }) {
-  console.log('Layout', async);
+function Layout({ services, state }) {
+  console.log('Layout', services, state);
   return <div>
     <Home />
   </div>
 }
 
-export default withService(Layout, 'test', 'async')
+export default withService('test', andState())(Layout)

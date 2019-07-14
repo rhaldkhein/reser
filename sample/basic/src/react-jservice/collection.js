@@ -7,7 +7,7 @@ exports["default"] = void 0;
 
 var _jservice = require("jservice");
 
-var _util = require("./misc/util");
+var _util = require("./services/util");
 
 var _loader = _interopRequireDefault(require("./loader"));
 
@@ -54,7 +54,7 @@ function (_BaseServiceCollectio) {
     key: "_push",
     value: function _push(Service, name, config, skip) {
       // Check if service is async or not
-      if ((0, _util._isFunction)(Service) && !(0, _util._isConstructor)(Service)) {
+      if ((0, _util.isFunction)(Service) && !(0, _util.isConstructor)(Service)) {
         // Async service
         var loader = new _loader["default"](Service, this._core.provider, config);
 

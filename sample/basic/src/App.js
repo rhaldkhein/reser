@@ -6,8 +6,8 @@ import { withContainer } from './react-jservice'
 import registry from './registry'
 
 function App(props) {
-  console.log('App', props);
   return (
+    props.container.isReady &&
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
@@ -28,4 +28,4 @@ function App(props) {
   )
 }
 
-export default withContainer(App, registry);
+export default withContainer(registry)(App);

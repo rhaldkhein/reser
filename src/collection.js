@@ -1,5 +1,5 @@
 import { ServiceCollection as BaseServiceCollection } from 'jservice'
-import { _isFunction, _isConstructor } from './misc/util'
+import { isFunction, isConstructor } from './services/util'
 import Loader from './loader'
 
 class ServiceCollection extends BaseServiceCollection {
@@ -11,7 +11,7 @@ class ServiceCollection extends BaseServiceCollection {
 
   _push(Service, name, config, skip) {
     // Check if service is async or not
-    if (_isFunction(Service) && !_isConstructor(Service)) {
+    if (isFunction(Service) && !isConstructor(Service)) {
       // Async service
       const loader = new Loader(Service, this._core.provider, config)
       const LoaderService = () => loader
