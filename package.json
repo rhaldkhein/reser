@@ -1,0 +1,57 @@
+{
+  "name": "react-jservice",
+  "version": "0.0.0",
+  "description": "An asynchronous DI framework for modular React and React-Native",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "npm run clean && babel src --out-dir lib",
+    "watch": "npm run clean && babel src --watch --out-dir lib",
+    "watch-basic": "npm run clean && babel src --watch --out-dir sample/basic/src/react-jservice",
+    "clean": "rm -rf lib && rm -rf sample/basic/src/react-jservice",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhaldkhein/react-jservice.git"
+  },
+  "author": "RhaldKhein",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rhaldkhein/react-jservice/issues"
+  },
+  "homepage": "https://github.com/rhaldkhein/react-jservice#readme",
+  "dependencies": {
+    "events": "^3.0.0",
+    "jservice": "^0.1.20",
+    "lodash.keyby": "^4.6.0",
+    "lodash.set": "^4.3.2",
+    "react-redux": "^7.0.3",
+    "redux": "^4.0.1"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-es2016": "^7.0.0-beta.53",
+    "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.6",
+    "eslint": "^5.16.0",
+    "eslint-plugin-react-hooks": "^1.6.0",
+    "node-localstorage": "^1.3.1",
+    "react": "^16.8.6"
+  },
+  "keywords": [
+    "react",
+    "framework",
+    "modular",
+    "hub",
+    "services"
+  ]
+}
