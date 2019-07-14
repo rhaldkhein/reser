@@ -9,7 +9,8 @@ class ServiceProvider extends BaseServiceProvider {
       const name = serviceNames[i]
       let service = this.service(name)
       if (service instanceof Loader) {
-        service.load(true).then(isNew => isNew && callback())
+        if (!service.value)
+          service.load(true).then(isNew => isNew && callback())
         service = service.value
       }
       services[name] = service
