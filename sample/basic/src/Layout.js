@@ -1,6 +1,6 @@
 import React from 'react'
 import Home from './Home'
-import { withService, andState } from './react-jservice';
+import { withService, andState } from './reser';
 
 function Layout({ services, state }) {
   console.log('Layout', services, state);

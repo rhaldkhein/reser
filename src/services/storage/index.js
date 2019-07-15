@@ -1,7 +1,7 @@
 import Local from './local'
 
 class Storage {
-  static service = '@storage'
+  static service = 'storage'
 
   adapter = null
 

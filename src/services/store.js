@@ -1,20 +1,20 @@
 import { createStore, combineReducers } from 'redux'
 
 export default class Store {
-  static service = '@store'
+  static service = 'store'
 
+  base = null
   _prefix = 'jsvc:'
   _core = null
   _config = null
   _reducers = null
   _storage = null
-  _store = null
   _util = null
 
   constructor(provider, config) {
     this._config = config
-    this._storage = provider.service('@storage')
-    this._util = provider.service('@util')
+    this._storage = provider.service('storage')
+    this._util = provider.service('__util__')
     this._core = provider.service('__core__')
     const { names, services } = this._core.collection
     let reducers = {}
@@ -82,7 +82,7 @@ export default class Store {
   }
 
   _setStore(store) {
-    this._store = store
+    this.base = store
     const { names, services } = this._core.collection
     for (const name in names) {
       if (!names.hasOwnProperty(name)) continue
@@ -110,7 +110,7 @@ export default class Store {
     let storage = this._storage
     let { get } = this._util
     let handleChange = () => {
-      let currentState = get(this._store.getState(), path)
+      let currentState = get(this.base.getState(), path)
       if (currentState !== lastState) {
         lastState = currentState
         // Write to storage
@@ -118,25 +118,33 @@ export default class Store {
           storage.setItem(this._prefix + path, JSON.stringify(currentState))
       }
     }
-    let unsubscribe = this._store.subscribe(handleChange)
+    let unsubscribe = this.base.subscribe(handleChange)
     handleChange()
     return unsubscribe
   }
 
   getStore() {
-    return this._store
+    return this.base
   }
 
   getState() {
-    return this._store.getState()
+    return this.base.getState()
   }
 
   dispatch(action) {
-    return this._store.dispatch(action)
+    return this.base.dispatch(action)
+  }
+
+  replaceReducer(nextReducer) {
+    return this.base.replaceReducer(nextReducer)
+  }
+
+  subscribe(listener) {
+    return this.base.subscribe(listener)
   }
 
   static start(provider) {
-    const store = provider.service('@store')
+    const store = provider.service('store')
     return store._createStore()
   }
 

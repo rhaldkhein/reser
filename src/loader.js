@@ -54,7 +54,4 @@ class Loader {
 
 }
 
-/**
- * Export
- */
 export default Loader

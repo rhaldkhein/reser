@@ -1,6 +1,4 @@
 
-import { StoreService } from './react-jservice'
-
 function hello(state = { name: 'default' }, action) {
   return state
 }
@@ -17,8 +15,6 @@ const FuncService = function (params) {
 }
 
 export default function (services) {
-
-  // services.configure(StoreService)
 
   services.add(Test)
 

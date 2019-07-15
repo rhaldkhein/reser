@@ -1,11 +1,11 @@
-# Rengine
+# Reser
 
-A micro framework for building modular react project.
+An asynchronous DI framework for modular React and React-Native.
 
-**Features:**
+**Key Features**
 
-- Modular dependency injection
-- Asynchronous module loading
-- Code splitting
-- Built-in support for persisting `redux` store
-- Works for both `react` and `react-native`
+- Dependency Injection
+- Asynchronous Service
+- Code Splitting
+- Persistent `redux` Store
+- For `react` and `react-native`

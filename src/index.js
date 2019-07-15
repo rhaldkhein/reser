@@ -30,7 +30,7 @@ class ReactJService extends BaseBuilder {
 function createContainer() {
   return new ReactJService()
     .build(services => {
-      services.add(UtilService, '@util')
+      services.add(UtilService, '__util__')
       services.add(StorageService)
       services.add(StoreService)
     })
@@ -60,7 +60,7 @@ export function withContainer(registry) {
         }
       }
       render() {
-        const store = this.container.provider.service('@store').getStore()
+        const store = this.container.provider.service('store').getStore()
         const childElement = React.createElement(ChildComponent, {
           container: this.container,
           ...this.props
@@ -117,9 +117,9 @@ export function withState(...serviceNames) {
       ChildComponent = withService.apply(null,
         services.length ? services : serviceNames)(ChildComponent)
     }
-    return connect(state => ({ state: mapStateToProps(serviceNames, state) }))(
-      ChildComponent
-    )
+    return connect(
+      state => ({ state: mapStateToProps(serviceNames, state) })
+    )(ChildComponent)
   }
 }
 

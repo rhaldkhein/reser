@@ -2,10 +2,11 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Layout from './Layout'
-import { withContainer } from './react-jservice'
+import { withContainer } from './reser'
 import registry from './registry'
 
 function App(props) {
+  console.log(props)
   return (
     props.container.isReady &&
     <div className="App">
