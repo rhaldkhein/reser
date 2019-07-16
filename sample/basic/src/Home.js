@@ -1,5 +1,5 @@
 import React from 'react'
-import { withService } from './reser';
+import { withService, andState } from './reser';
 
 function Home({ services, state }) {
   console.log('Home', services, state);
@@ -10,4 +10,4 @@ function Home({ services, state }) {
   </div>
 }
 
-export default withService('test', 'func', 'async', [])(Home)
+export default withService('test', 'func', 'async', andState())(Home)

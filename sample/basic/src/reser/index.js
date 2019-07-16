@@ -6,8 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.withContainer = withContainer;
 exports.withService = withService;
 exports.withState = withState;
-exports.andService = andService;
-exports.andState = andState;
+exports.andState = exports.andService = exports.and = and;
 exports.createContainer = createContainer;
 Object.defineProperty(exports, "StorageService", {
   enumerable: true,
@@ -207,24 +206,16 @@ function withState() {
 
     return (0, _reactRedux.connect)(function (state) {
       return {
-        state: mapStateToProps(serviceNames, state)
+        state: typeof serviceNames[0] === 'function' ? serviceNames[0](state) : mapStateToProps(serviceNames, state)
       };
     })(ChildComponent);
   };
 }
 
-function andService() {
+function and() {
   for (var _len3 = arguments.length, serviceNames = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
     serviceNames[_key3] = arguments[_key3];
   }
 
-  return serviceNames;
-}
-
-function andState() {
-  for (var _len4 = arguments.length, serviceNames = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-    serviceNames[_key4] = arguments[_key4];
-  }
-
-  return serviceNames;
+  return Array.isArray(serviceNames[0]) ? serviceNames[0] : serviceNames;
 }

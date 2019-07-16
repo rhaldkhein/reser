@@ -118,21 +118,23 @@ export function withState(...serviceNames) {
         services.length ? services : serviceNames)(ChildComponent)
     }
     return connect(
-      state => ({ state: mapStateToProps(serviceNames, state) })
+      state => ({
+        state: typeof serviceNames[0] === 'function' ?
+          serviceNames[0](state) :
+          mapStateToProps(serviceNames, state)
+      })
     )(ChildComponent)
   }
 }
 
-export function andService(...serviceNames) {
-  return serviceNames
-}
-
-export function andState(...serviceNames) {
-  return serviceNames
+export function and(...serviceNames) {
+  return Array.isArray(serviceNames[0]) ? serviceNames[0] : serviceNames
 }
 
 export {
   createContainer,
   StorageService,
-  StoreService
+  StoreService,
+  and as andService,
+  and as andState
 }

@@ -42,7 +42,6 @@ class ServiceCollection extends BaseServiceCollection {
     throw new Error('Transient services are not supported yet')
   }
 
-
 }
 
 export default ServiceCollection
