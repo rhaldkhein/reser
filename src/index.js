@@ -5,7 +5,7 @@ import ServiceCollection from './collection'
 import ServiceProvider from './provider'
 
 // Built-in services
-import * as UtilService from './services/util'
+import UtilService from './services/util'
 import StorageService from './services/storage'
 import StoreService from './services/store'
 
@@ -21,7 +21,7 @@ class ReactServices extends BaseBuilder {
     this.provider = new ServiceProvider(this.collection)
   }
 
-  createScopedProvider() {
+  createProvider() {
     throw new Error('Scoped providers are not supported yet')
   }
 
@@ -30,7 +30,7 @@ class ReactServices extends BaseBuilder {
 function createContainer() {
   return new ReactServices()
     .build(services => {
-      services.add(UtilService, '__util__')
+      services.add(UtilService)
       services.add(StorageService)
       services.add(StoreService)
     })
@@ -53,7 +53,7 @@ export function withContainer(registry) {
         this.container = createContainer().build(registry)
         this.container.start().then(() => this.forceUpdate())
         this.contextValue = {
-          provider: this.container.provider,
+          container: this.container,
           asyncLoaded: () => {
             this.setState({ count: this.state.count + 1 })
           }
@@ -83,6 +83,23 @@ export function withContainer(registry) {
   }
 }
 
+export function withNewService(registry) {
+  return function (ChildComponent) {
+    return function (props) {
+      return React.createElement(ContainerContext.Consumer, null,
+        function (context) {
+          context.container.build(registry)
+          return React.createElement(
+            ChildComponent,
+            { container: context.container },
+            props.children
+          )
+        }
+      )
+    }
+  }
+}
+
 export function withService(...serviceNames) {
   return function (ChildComponent) {
     if (Array.isArray(serviceNames[serviceNames.length - 1])) {
@@ -92,13 +109,13 @@ export function withService(...serviceNames) {
     }
     return function (props) {
       return React.createElement(ContainerContext.Consumer, null,
-        function (container) {
+        function (context) {
           return React.createElement(AsyncCountContext.Consumer, null,
             function () {
               return React.createElement(ChildComponent, {
-                services: container.provider.createServices(
+                services: context.container.provider.createServices(
                   serviceNames,
-                  container.asyncLoaded
+                  context.asyncLoaded
                 ),
                 ...props
               })
@@ -132,9 +149,12 @@ export function and(...serviceNames) {
 }
 
 export {
+  // HOC
   createContainer,
+  and as andService,
+  and as andState,
+  // Services
   StorageService,
   StoreService,
-  and as andService,
-  and as andState
+  UtilService
 }

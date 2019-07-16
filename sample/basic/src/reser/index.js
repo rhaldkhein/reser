@@ -4,10 +4,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.withContainer = withContainer;
+exports.withNewService = withNewService;
 exports.withService = withService;
 exports.withState = withState;
 exports.andState = exports.andService = exports.and = and;
 exports.createContainer = createContainer;
+Object.defineProperty(exports, "UtilService", {
+  enumerable: true,
+  get: function get() {
+    return _util["default"];
+  }
+});
 Object.defineProperty(exports, "StorageService", {
   enumerable: true,
   get: function get() {
@@ -31,13 +38,11 @@ var _collection = _interopRequireDefault(require("./collection"));
 
 var _provider = _interopRequireDefault(require("./provider"));
 
-var UtilService = _interopRequireWildcard(require("./services/util"));
+var _util = _interopRequireDefault(require("./services/util"));
 
 var _storage = _interopRequireDefault(require("./services/storage"));
 
 var _store = _interopRequireDefault(require("./services/store"));
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj["default"] = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -87,8 +92,8 @@ function (_BaseBuilder) {
   }
 
   _createClass(ReactServices, [{
-    key: "createScopedProvider",
-    value: function createScopedProvider() {
+    key: "createProvider",
+    value: function createProvider() {
       throw new Error('Scoped providers are not supported yet');
     }
   }]);
@@ -98,7 +103,7 @@ function (_BaseBuilder) {
 
 function createContainer() {
   return new ReactServices().build(function (services) {
-    services.add(UtilService, '__util__');
+    services.add(_util["default"]);
     services.add(_storage["default"]);
     services.add(_store["default"]);
   });
@@ -135,7 +140,7 @@ function withContainer(registry) {
           });
 
           _this2.contextValue = {
-            provider: _this2.container.provider,
+            container: _this2.container,
             asyncLoaded: function asyncLoaded() {
               _this2.setState({
                 count: _this2.state.count + 1
@@ -170,6 +175,19 @@ function withContainer(registry) {
   };
 }
 
+function withNewService(registry) {
+  return function (ChildComponent) {
+    return function (props) {
+      return _react["default"].createElement(ContainerContext.Consumer, null, function (context) {
+        context.container.build(registry);
+        return _react["default"].createElement(ChildComponent, {
+          container: context.container
+        }, props.children);
+      });
+    };
+  };
+}
+
 function withService() {
   for (var _len = arguments.length, serviceNames = new Array(_len), _key = 0; _key < _len; _key++) {
     serviceNames[_key] = arguments[_key];
@@ -182,10 +200,10 @@ function withService() {
     }
 
     return function (props) {
-      return _react["default"].createElement(ContainerContext.Consumer, null, function (container) {
+      return _react["default"].createElement(ContainerContext.Consumer, null, function (context) {
         return _react["default"].createElement(AsyncCountContext.Consumer, null, function () {
           return _react["default"].createElement(ChildComponent, _objectSpread({
-            services: container.provider.createServices(serviceNames, container.asyncLoaded)
+            services: context.container.provider.createServices(serviceNames, context.asyncLoaded)
           }, props));
         });
       });

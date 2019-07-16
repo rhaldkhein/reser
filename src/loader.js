@@ -1,4 +1,4 @@
-import { isFunction, isConstructor } from './services/util'
+import { isFunction, isConstructor } from './services/util/proto'
 
 class Loader {
 

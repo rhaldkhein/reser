@@ -41,7 +41,7 @@ function () {
 
     this._config = config;
     this._storage = provider.service('storage');
-    this._util = provider.service('__util__');
+    this._util = provider.service('util');
     this._collection = provider.service('__core__').collection;
     var _this$_collection = this._collection,
         names = _this$_collection.names,

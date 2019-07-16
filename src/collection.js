@@ -1,5 +1,5 @@
 import { ServiceCollection as BaseServiceCollection } from 'jservice'
-import { isFunction, isConstructor } from './services/util'
+import { isFunction, isConstructor } from './services/util/proto'
 import Loader from './loader'
 
 class ServiceCollection extends BaseServiceCollection {
@@ -9,7 +9,15 @@ class ServiceCollection extends BaseServiceCollection {
     this._core = core
   }
 
+  _validate(service) {
+    let err = null
+    if (service.async) err = 'async'
+    // Add more static validation
+    if (err) throw new Error(`Invalid service signature "${err}"`)
+  }
+
   _push(Service, name, config, skip) {
+    this._validate(Service)
     // Check if service is async or not
     if (isFunction(Service) && !isConstructor(Service)) {
       // Async service

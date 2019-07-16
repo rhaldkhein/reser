@@ -14,7 +14,7 @@ export default class Store {
   constructor(provider, config) {
     this._config = config
     this._storage = provider.service('storage')
-    this._util = provider.service('__util__')
+    this._util = provider.service('util')
     this._collection = provider.service('__core__').collection
     const { names, services } = this._collection
     let reducers = {}

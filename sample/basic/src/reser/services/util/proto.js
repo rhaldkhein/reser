@@ -4,30 +4,27 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.get = get;
+exports.set = set;
 exports.pick = pick;
 exports.isEmpty = isEmpty;
 exports.mapObject = mapObject;
 exports.isFunction = isFunction;
 exports.isConstructor = isConstructor;
-Object.defineProperty(exports, "set", {
-  enumerable: true,
-  get: function get() {
-    return _lodash["default"];
-  }
-});
+exports.invert = invert;
 
 var _lodash = _interopRequireDefault(require("lodash.set"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-/**
- * Utilities
- */
 function get(obj, path) {
   var defaultValue = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   return String.prototype.split.call(path, /[,[\].]+?/).filter(Boolean).reduce(function (a, c) {
     return Object.hasOwnProperty.call(a, c) ? a[c] : defaultValue;
   }, obj);
+}
+
+function set(obj, val) {
+  return (0, _lodash["default"])(obj, val);
 }
 
 function pick(object, keys) {
@@ -57,4 +54,14 @@ function isFunction(fn) {
 
 function isConstructor(fn) {
   return typeof fn === 'function' && fn.hasOwnProperty('prototype');
+}
+
+function invert(obj) {
+  var ret = {};
+
+  for (var key in obj) {
+    ret[obj[key]] = key;
+  }
+
+  return ret;
 }

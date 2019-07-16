@@ -1,13 +1,18 @@
 import React from 'react'
-import { withService, andState } from './reser';
+import { withService } from './reser';
 
-function Home({ services, state }) {
-  console.log('Home', services, state);
+function Home(props) {
+  const { async } = props.services
+  if (async) console.log(async);
   return <div>
     <h1>Home</h1>
-    <div>{services.test ? 'Loaded ' + state.test.name : 'Loading'}</div>
-    <div>{services.async ? 'Loaded ' + state.async.asyncName : 'Loading'}</div>
+    <div>
+      {
+        async &&
+        <async.View />
+      }
+    </div>
   </div>
 }
 
-export default withService('test', 'func', 'async', andState())(Home)
+export default withService('async')(Home)

@@ -1,27 +1,57 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Layout from './Layout'
 import { withContainer } from './reser'
 import registry from './registry'
+import { BrowserRouter as Router, Route, Link } from "react-router-dom"
+import Home from './Home'
 
-function App(props) {
+function Index() {
+  return <h2>Home</h2>;
+}
+
+function About() {
+  return <h2>About</h2>;
+}
+
+function Users() {
+  return <h2>Users</h2>;
+}
+
+function App({ container }) {
+  // console.log(container)
+  const util = container.provider.get('util')
+  const res = util.getStatics('mergetest', {
+    merge: true
+  })
+  console.log(res);
   return (
-    props.container.isReady &&
+    container.isReady &&
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer">
-          Learn React
-        </a>
-        <Layout />
-      </header>
+      <Router>
+        <header>
+          <h1>Reser</h1>
+          <nav>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/about">About</Link>
+              </li>
+              <li>
+                <Link to="/users">Users</Link>
+              </li>
+            </ul>
+          </nav>
+        </header>
+        <div>
+          <Route path="/" exact component={Index} />
+          <Route path="/about" component={About} />
+          <Route path="/users" component={Users} />
+        </div>
+        <div>
+          <Home />
+        </div>
+      </Router>
     </div>
   )
 }

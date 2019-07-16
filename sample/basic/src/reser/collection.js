@@ -7,7 +7,7 @@ exports["default"] = void 0;
 
 var _jservice = require("jservice");
 
-var _util = require("./services/util");
+var _proto = require("./services/util/proto");
 
 var _loader = _interopRequireDefault(require("./loader"));
 
@@ -51,10 +51,20 @@ function (_BaseServiceCollectio) {
   }
 
   _createClass(ServiceCollection, [{
+    key: "_validate",
+    value: function _validate(service) {
+      var err = null;
+      if (service.async) err = 'async'; // Add more static validation
+
+      if (err) throw new Error("Invalid service signature \"".concat(err, "\""));
+    }
+  }, {
     key: "_push",
     value: function _push(Service, name, config, skip) {
-      // Check if service is async or not
-      if ((0, _util.isFunction)(Service) && !(0, _util.isConstructor)(Service)) {
+      this._validate(Service); // Check if service is async or not
+
+
+      if ((0, _proto.isFunction)(Service) && !(0, _proto.isConstructor)(Service)) {
         // Async service
         Service.service = name;
         var loader = new _loader["default"](this._core.provider, Service, name, config);
