@@ -4,8 +4,8 @@ export default class Store {
   static service = 'store'
 
   base = null
-  _prefix = 'jsvc:'
-  _core = null
+  _namespace = 'rsrx:'
+  _collection = null
   _config = null
   _reducers = null
   _storage = null
@@ -15,8 +15,8 @@ export default class Store {
     this._config = config
     this._storage = provider.service('storage')
     this._util = provider.service('__util__')
-    this._core = provider.service('__core__')
-    const { names, services } = this._core.collection
+    this._collection = provider.service('__core__').collection
+    const { names, services } = this._collection
     let reducers = {}
     for (const name in names) {
       if (names.hasOwnProperty(name)) {
@@ -44,16 +44,14 @@ export default class Store {
       return storage.getAllKeys()
         .then(keys => {
           const toGet = []
+          keys.sort((a, b) => a.length - b.length)
           keys.forEach(key => {
-            if (!key.startsWith(this._prefix)) return
+            if (!key.startsWith(this._namespace)) return
             const path = key.split(':')[1]
+            // Async service should not be added in initial state
             toGet.push(
               storage.getItem(key).then(value => {
-                try {
-                  this._util.set(state, path, JSON.parse(value))
-                } catch (error) {
-                  // TODO: put something here
-                }
+                this._util.set(state, path, JSON.parse(value))
               })
             )
           })
@@ -83,26 +81,36 @@ export default class Store {
 
   _setStore(store) {
     this.base = store
-    const { names, services } = this._core.collection
+    const { names, services } = this._collection
     for (const name in names) {
       if (!names.hasOwnProperty(name)) continue
       const service = services[names[name]]
       if (service.persist) {
-        this._persistService(service)
+        this._persistService(service, name)
       }
     }
   }
 
-  _persistService(service) {
+  _persistService(service, name) {
+    if (service.persist === undefined) return
+    if (!name) throw new Error('Persistent service must have name')
+    // Write to storage
     if (service.persist === true) {
       // Persist whole service
-      this._persistState(service.service)
+      this._persistState(name)
     } else {
       // Should be array, persist by keys
       service.persist.forEach(path => {
-        this._persistState(service.service + '.' + path)
+        this._persistState(name + '.' + path)
       })
     }
+    // Mutate reducer
+    this.base.replaceReducer(
+      combineReducers({
+        ...this._reducers,
+        [name]: service.reducer
+      })
+    )
   }
 
   _persistState(path) {
@@ -115,7 +123,7 @@ export default class Store {
         lastState = currentState
         // Write to storage
         if (storage && path)
-          storage.setItem(this._prefix + path, JSON.stringify(currentState))
+          storage.setItem(this._namespace + path, JSON.stringify(currentState))
       }
     }
     let unsubscribe = this.base.subscribe(handleChange)

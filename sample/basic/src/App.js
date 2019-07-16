@@ -6,7 +6,6 @@ import { withContainer } from './reser'
 import registry from './registry'
 
 function App(props) {
-  console.log(props)
   return (
     props.container.isReady &&
     <div className="App">

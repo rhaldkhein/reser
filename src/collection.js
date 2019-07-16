@@ -13,13 +13,25 @@ class ServiceCollection extends BaseServiceCollection {
     // Check if service is async or not
     if (isFunction(Service) && !isConstructor(Service)) {
       // Async service
-      const loader = new Loader(Service, this._core.provider, config)
+      Service.service = name
+      const loader = new Loader(this._core.provider, Service, name, config)
       const LoaderService = () => loader
       LoaderService.type = Service.type
       LoaderService.service = name
+      LoaderService.async = true
       Service = LoaderService
     }
     super._push(Service, name, config, skip)
+  }
+
+  isAsyncService(name) {
+    const { names, services } = this
+    for (const key in names) {
+      if (names.hasOwnProperty(key) && key === name) {
+        return services[names[key]].async || false
+      }
+    }
+    return true
   }
 
   scoped() {

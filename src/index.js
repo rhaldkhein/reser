@@ -13,7 +13,7 @@ import StoreService from './services/store'
 const ContainerContext = React.createContext()
 const AsyncCountContext = React.createContext(0)
 
-class ReactJService extends BaseBuilder {
+class ReactServices extends BaseBuilder {
 
   constructor() {
     super()
@@ -28,7 +28,7 @@ class ReactJService extends BaseBuilder {
 }
 
 function createContainer() {
-  return new ReactJService()
+  return new ReactServices()
     .build(services => {
       services.add(UtilService, '__util__')
       services.add(StorageService)

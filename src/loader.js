@@ -1,13 +1,11 @@
 import { isFunction, isConstructor } from './services/util'
 
-/**
- * Responsible for loading an async module.
- */
 class Loader {
 
-  constructor(loader, provider, config) {
-    this._loader = loader
+  constructor(provider, loader, name, config) {
     this._provider = provider
+    this._loader = loader
+    this._name = name
     this._config = config
     this._service = null
     this._loading = null
@@ -33,22 +31,27 @@ class Loader {
     }
     if (this.value) return Promise.resolve(this.value)
     // Continue fetching and creating instance
-    this._loading = this._fetch().then(Service => {
-      let result
-      if (isConstructor(Service)) {
-        result = new Service(
-          this._provider,
-          this._config && this._config(this._provider)
-        )
-      } else if (isFunction(Service)) {
-        result = Service()
-      } else {
-        result = Service
-      }
-      this.value = result
-      this._loading = null
-      return result
-    })
+    this._loading = this._fetch()
+      .then(Service => {
+        let result
+        if (isConstructor(Service)) {
+          result = new Service(
+            this._provider,
+            this._config && this._config(this._provider)
+          )
+        } else if (isFunction(Service)) {
+          result = Service()
+        } else {
+          result = Service
+        }
+        this.value = result
+        this._loading = null
+        if (Service.persist) {
+          return this._provider.service('store')
+            ._persistService(Service, this._name)
+        }
+      })
+      .then(() => this.value)
     return this._loading
   }
 
