@@ -45,14 +45,14 @@ function () {
       var _this$_core$collectio = this._core.collection,
           names = _this$_core$collectio.names,
           services = _this$_core$collectio.services;
-      names = this.invert(names);
       var result = {};
+      names = this.invert(names);
 
       for (var i = 0; i < services.length; i++) {
         var service = services[i];
 
         if (service.async) {
-          service = service._service;
+          service = service()._service;
           if (!service) continue;
         }
 
@@ -68,6 +68,29 @@ function () {
       }
 
       return result;
+    }
+  }, {
+    key: "loadAsyncServices",
+    value: function loadAsyncServices() {
+      var _this$_core$collectio2 = this._core.collection,
+          names = _this$_core$collectio2.names,
+          services = _this$_core$collectio2.services;
+      var toLoad = [];
+      names = this.invert(names);
+
+      for (var _len = arguments.length, serviceNames = new Array(_len), _key = 0; _key < _len; _key++) {
+        serviceNames[_key] = arguments[_key];
+      }
+
+      for (var i = 0; i < services.length; i++) {
+        var service = services[i];
+        if (!service.async) continue;
+        service = service();
+        if (serviceNames.length && serviceNames.indexOf(names[i]) === -1) continue;
+        toLoad.push(service.load());
+      }
+
+      return Promise.all(toLoad);
     }
   }]);
 

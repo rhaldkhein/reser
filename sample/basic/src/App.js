@@ -23,6 +23,9 @@ function App({ container }) {
     merge: true
   })
   console.log(res);
+  util.loadAsyncServices().then(res => {
+    console.log(res)
+  })
   return (
     container.isReady &&
     <div className="App">
