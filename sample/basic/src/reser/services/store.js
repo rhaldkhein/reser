@@ -22,7 +22,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var Store =
 /*#__PURE__*/
 function () {
-  function Store(provider, config) {
+  function Store(provider) {
+    var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
     _classCallCheck(this, Store);
 
     _defineProperty(this, "base", null);
@@ -39,6 +41,7 @@ function () {
 
     _defineProperty(this, "_util", null);
 
+    if (config.namespace) this._namespace += config.namespace + ':';
     this._config = config;
     this._storage = provider.service('storage');
     this._util = provider.service('util');
@@ -182,8 +185,18 @@ function () {
     }
   }, {
     key: "getState",
-    value: function getState() {
-      return this.base.getState();
+    value: function getState(name) {
+      var state = this.base.getState();
+      return name ? state[name] : state;
+    }
+  }, {
+    key: "state",
+    value: function state(name) {
+      var _this5 = this;
+
+      return function () {
+        return _this5.base.getState()[name];
+      };
     }
   }, {
     key: "dispatch",

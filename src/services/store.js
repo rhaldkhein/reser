@@ -11,7 +11,8 @@ export default class Store {
   _storage = null
   _util = null
 
-  constructor(provider, config) {
+  constructor(provider, config = {}) {
+    if (config.namespace) this._namespace += config.namespace + ':'
     this._config = config
     this._storage = provider.service('storage')
     this._util = provider.service('util')
@@ -135,8 +136,13 @@ export default class Store {
     return this.base
   }
 
-  getState() {
-    return this.base.getState()
+  getState(name) {
+    const state = this.base.getState()
+    return name ? state[name] : state
+  }
+
+  state(name) {
+    return () => this.base.getState()[name]
   }
 
   dispatch(action) {

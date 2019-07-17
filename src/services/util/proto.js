@@ -6,8 +6,8 @@ export function get(obj, path, defaultValue = null) {
     .reduce((a, c) => (Object.hasOwnProperty.call(a, c) ? a[c] : defaultValue), obj)
 }
 
-export function set(obj, val) {
-  return _set(obj, val)
+export function set(obj, key, val) {
+  return _set(obj, key, val)
 }
 
 export function pick(object, keys) {

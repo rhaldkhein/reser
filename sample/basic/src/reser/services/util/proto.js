@@ -23,8 +23,8 @@ function get(obj, path) {
   }, obj);
 }
 
-function set(obj, val) {
-  return (0, _lodash["default"])(obj, val);
+function set(obj, key, val) {
+  return (0, _lodash["default"])(obj, key, val);
 }
 
 function pick(object, keys) {
