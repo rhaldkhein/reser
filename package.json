@@ -5,9 +5,12 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "npm run clean && babel src --out-dir lib",
+    "build-basic": "npm run clean && babel src --out-dir sample/basic/src/reser",
+    "build-advance": "npm run clean && babel src --out-dir sample/advance/src/reser",
     "watch": "npm run clean && babel src --watch --out-dir lib",
     "watch-basic": "npm run clean && babel src --watch --out-dir sample/basic/src/reser",
-    "clean": "rm -rf lib && rm -rf sample/basic/src/reser",
+    "watch-advance": "npm run clean && babel src --watch --out-dir sample/advance/src/reser",
+    "clean": "rm -rf lib && rm -rf sample/basic/src/reser && rm -rf sample/advance/src/reser",
     "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
