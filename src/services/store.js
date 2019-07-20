@@ -16,24 +16,15 @@ export default class Store {
     this._config = config
     this._storage = provider.service('storage')
     this._util = provider.service('util')
-    this._collection = provider.service('__core__').collection
-    const { names, services } = this._collection
-    let reducers = {}
-    for (const name in names) {
-      if (names.hasOwnProperty(name)) {
-        const service = services[names[name]]
-        if (service.reducer)
-          reducers[name] = service.reducer
-      }
-    }
-    this._reducers = reducers
+    this._collection = provider.service('core').collection
+    this._reducers = this._util.getStatics('reducer')
   }
 
   _defaultConfig(arg) {
     return {
       store: createStore(
-        arg.rootReducer || (s => s),
-        arg.initialState || {}
+        arg.rootReducer,
+        arg.initialState
       )
     }
   }
@@ -68,7 +59,9 @@ export default class Store {
       .then(() => this._getInitialState())
       .then(state => {
         let arg = {
-          rootReducer: combineReducers(this._reducers),
+          rootReducer: this._util.isEmpty(this._reducers) ?
+            s => s :
+            combineReducers(this._reducers),
           initialState: state
         }
         let result = (
@@ -85,7 +78,7 @@ export default class Store {
     const { names, services } = this._collection
     for (const name in names) {
       if (!names.hasOwnProperty(name)) continue
-      const service = services[names[name]]
+      const service = services[names[name]].value
       if (service.persist) {
         this._persistService(service, name)
       }

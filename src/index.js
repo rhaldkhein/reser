@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect, Provider } from 'react-redux'
-import BaseBuilder from 'jservice'
+import BaseContainer from 'jservice'
 import ServiceCollection from './collection'
 import ServiceProvider from './provider'
 
@@ -13,12 +13,16 @@ import StoreService from './services/store'
 const ContainerContext = React.createContext()
 const AsyncCountContext = React.createContext(0)
 
-class ReactServices extends BaseBuilder {
+class ReactServices extends BaseContainer {
 
   constructor() {
     super()
     this.collection = new ServiceCollection(this)
     this.provider = new ServiceProvider(this.collection)
+  }
+
+  createContainer() {
+    throw new Error('Scoped containers are not supported yet')
   }
 
   createProvider() {
@@ -65,6 +69,7 @@ export function withContainer(registry) {
           container: this.container,
           ...this.props
         })
+        console.log('count', this.state.count)
         return React.createElement(
           ContainerContext.Provider,
           { value: this.contextValue },
@@ -111,12 +116,14 @@ export function withService(...serviceNames) {
       return React.createElement(ContainerContext.Consumer, null,
         function (context) {
           return React.createElement(AsyncCountContext.Consumer, null,
-            function () {
+            function (count) {
+              console.log('count comsumer', count)
               return React.createElement(ChildComponent, {
                 services: context.container.provider.createServices(
                   serviceNames,
                   context.asyncLoaded
                 ),
+                count,
                 ...props
               })
             }

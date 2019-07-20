@@ -5,6 +5,7 @@ import registry from './registry'
 import Home from './routes/Home'
 
 function App({ container }) {
+  console.log('App', container)
   return (
     container.isReady &&
     <div className="App">
