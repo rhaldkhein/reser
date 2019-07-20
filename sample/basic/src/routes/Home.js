@@ -7,7 +7,6 @@ class Home extends Component {
 
   constructor(props) {
     super(props)
-    console.log('Home', props)
     // Create a reference to user service
     this.userService = props.services.user
   }
@@ -77,4 +76,5 @@ class Home extends Component {
 
 // Here we inject `user` service and its state.
 // Remove andState, if you only need the service.
-export default withService('user', 'async', andState())(Home)
+// export default withService('user', 'async', andState())(Home)
+export default withService('user', andState())(Home)

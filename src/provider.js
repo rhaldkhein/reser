@@ -15,6 +15,8 @@ class ServiceProvider extends BaseServiceProvider {
         const service = this._collection.get(name)
         const { config } = service
         if (isConstructor(Service)) {
+          const store = this.service('store')
+          store._persistService(Service, name)
           asyncInstance = new Service(
             this._createServiceProvider(service),
             isFunction(config) ? config(this) : config
@@ -37,9 +39,7 @@ class ServiceProvider extends BaseServiceProvider {
       if (instance instanceof Promise) {
         // Async service
         let asyncInstance = this._instancesAsync[name]
-        if (!asyncInstance) instance.then(() => {
-          setTimeout(callback, 3000)
-        })
+        if (!asyncInstance) instance.then(() => callback(name))
         instance = asyncInstance
       }
       result[name] = instance

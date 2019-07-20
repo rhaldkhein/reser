@@ -11,7 +11,6 @@ import StoreService from './services/store'
 
 // DI container contexts
 const ContainerContext = React.createContext()
-const AsyncCountContext = React.createContext(0)
 
 class ReactServices extends BaseContainer {
 
@@ -53,54 +52,28 @@ export function withContainer(registry) {
     return class extends React.Component {
       constructor(props) {
         super(props)
-        this.state = { count: 0 }
-        this.container = createContainer().build(registry)
-        this.container.start().then(() => this.forceUpdate())
-        this.contextValue = {
-          container: this.container,
-          asyncLoaded: () => {
-            this.setState({ count: this.state.count + 1 })
-          }
-        }
+        const container = createContainer().build(registry)
+        container.start().then(() => this.loaded(''))
+        this.state = { container, name: null, loaded: this.loaded }
       }
+      loaded = name => this.setState({ name })
       render() {
-        const store = this.container.provider.service('store').getStore()
+        const store = this.state.container.provider.service('store').getStore()
         const childElement = React.createElement(ChildComponent, {
-          container: this.container,
+          container: this.state.container,
           ...this.props
         })
-        console.log('count', this.state.count)
         return React.createElement(
           ContainerContext.Provider,
-          { value: this.contextValue },
-          React.createElement(
-            AsyncCountContext.Provider,
-            { value: this.state.count },
-            !store ? childElement :
-              React.createElement(
-                Provider,
-                { store },
-                childElement
-              ))
+          { value: this.state },
+          !store ? childElement :
+            React.createElement(
+              Provider,
+              { store },
+              childElement
+            )
         )
       }
-    }
-  }
-}
-
-export function withNewService(registry) {
-  return function (ChildComponent) {
-    return function (props) {
-      return React.createElement(ContainerContext.Consumer, null,
-        function (context) {
-          context.container.build(registry)
-          return React.createElement(
-            ChildComponent,
-            { container: context.container },
-            props.children
-          )
-        }
-      )
     }
   }
 }
@@ -115,19 +88,13 @@ export function withService(...serviceNames) {
     return function (props) {
       return React.createElement(ContainerContext.Consumer, null,
         function (context) {
-          return React.createElement(AsyncCountContext.Consumer, null,
-            function (count) {
-              console.log('count comsumer', count)
-              return React.createElement(ChildComponent, {
-                services: context.container.provider.createServices(
-                  serviceNames,
-                  context.asyncLoaded
-                ),
-                count,
-                ...props
-              })
-            }
-          )
+          return React.createElement(ChildComponent, {
+            services: context.container.provider.createServices(
+              serviceNames,
+              context.loaded
+            ),
+            ...props
+          })
         }
       )
     }
