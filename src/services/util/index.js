@@ -22,10 +22,6 @@ class Util {
     names = this.invert(names)
     for (let i = 0; i < services.length; i++) {
       let service = services[i].value
-      // if (service.async) {
-      //   service = service()._service
-      //   if (!service) continue
-      // }
       let value = service[prop]
       if (value === undefined) continue
       if (options.merge) {
@@ -36,22 +32,6 @@ class Util {
     }
     return result
   }
-
-  // loadAsyncServices(...serviceNames) {
-  //   let { names, services } = this._core.collection
-  //   let toLoad = []
-  //   names = this.invert(names)
-  //   for (let i = 0; i < services.length; i++) {
-  //     let service = services[i]
-  //     // if (!service.async) continue
-  //     service = service()
-  //     if (serviceNames.length &&
-  //       serviceNames.indexOf(names[i]) === -1)
-  //       continue
-  //     toLoad.push(service.load())
-  //   }
-  //   return Promise.all(toLoad)
-  // }
 
 }
 
