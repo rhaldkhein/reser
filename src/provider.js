@@ -3,46 +3,53 @@ import { isFunction, isConstructor } from './services/util/proto'
 
 class ServiceProvider extends BaseServiceProvider {
 
-  _instancesAsync = {}
+  asyncLoadCallback = null
 
   _createService(name) {
     let instance = super._createService(name)
     if (instance instanceof Promise) {
-      // For now async service is singleton
-      return instance.then(Service => {
-        let asyncInstance = this._instancesAsync[name]
-        if (asyncInstance) return asyncInstance
-        const service = this._collection.get(name)
-        const { config } = service
+      const serviceDesc = this._collection.get(name)
+      // Return existing instance
+      if (serviceDesc.asyncInstance) return Promise.resolve(serviceDesc.asyncInstance)
+      if (serviceDesc.asyncFetching) return serviceDesc.asyncFetching
+      // Create new instance
+      return serviceDesc.asyncFetching = instance.then(() => {
+        let asyncInstance
+        const { asyncService: Service, config } = serviceDesc
         if (isConstructor(Service)) {
           const store = this.service('store')
           store._persistService(Service, name)
           asyncInstance = new Service(
-            this._createServiceProvider(service),
+            this._createServiceProvider(serviceDesc),
             isFunction(config) ? config(this) : config
           )
         } else {
           asyncInstance = isFunction(Service) ? Service() : Service
         }
-        this._instancesAsync[name] = asyncInstance
+        serviceDesc.asyncInstance = asyncInstance
+        serviceDesc.asyncFetching = null
+        this.asyncLoadCallback(name)
         return asyncInstance
       })
     }
     return instance
   }
 
-  createServices(serviceNames, callback) {
+  setAsyncLoadCallback(callback) {
+    this.asyncLoadCallback = callback
+  }
+
+  createServices(serviceNames) {
     let result = {}
     for (let i = 0; i < serviceNames.length; i++) {
       const name = serviceNames[i]
-      let instance = this.service(name)
-      if (instance instanceof Promise) {
-        // Async service
-        let asyncInstance = this._instancesAsync[name]
-        if (!asyncInstance) instance.then(() => callback(name))
-        instance = asyncInstance
+      const serviceDesc = this._collection.get(name)
+      if (serviceDesc.asyncInstance) {
+        result[name] = serviceDesc.asyncInstance
+        continue
       }
-      result[name] = instance
+      const instance = this.service(name)
+      result[name] = instance instanceof Promise ? null : instance
     }
     return result
   }

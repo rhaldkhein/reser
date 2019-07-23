@@ -53,8 +53,9 @@ export function withContainer(registry) {
       constructor(props) {
         super(props)
         const container = createContainer().build(registry)
+        container.provider.setAsyncLoadCallback(this.loaded)
         container.start().then(() => this.loaded(''))
-        this.state = { container, name: null, loaded: this.loaded }
+        this.state = { container, name: null }
       }
       loaded = name => this.setState({ name })
       render() {
@@ -87,12 +88,9 @@ export function withService(...serviceNames) {
     }
     return function (props) {
       return React.createElement(ContainerContext.Consumer, null,
-        function (context) {
+        function (ctx) {
           return React.createElement(ChildComponent, {
-            services: context.container.provider.createServices(
-              serviceNames,
-              context.loaded
-            ),
+            services: ctx.container.provider.createServices(serviceNames),
             ...props
           })
         }

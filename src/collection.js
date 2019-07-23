@@ -5,7 +5,7 @@ class ServiceCollection extends BaseServiceCollection {
   _push(service, desc) {
     if (desc.type === 0 && desc.typeof === 'function') {
       service = (service => () => {
-        return service()().then(s => s.default)
+        return service()().then(s => desc.asyncService = s.default)
       })(service)
     }
     return super._push(service, desc)
