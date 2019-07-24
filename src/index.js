@@ -20,10 +20,6 @@ class ReactServices extends BaseContainer {
     this.provider = new ServiceProvider(this.collection)
   }
 
-  createContainer() {
-    throw new Error('Scoped containers are not supported yet')
-  }
-
   createProvider() {
     throw new Error('Scoped providers are not supported yet')
   }

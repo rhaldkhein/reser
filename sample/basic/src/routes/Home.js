@@ -78,4 +78,4 @@ class Home extends Component {
 // Here we inject `user` service and its state.
 // Remove andState, if you only need the service.
 // export default withService('user', 'async', andState())(Home)
-export default withService('user', 'async', andState())(Home)
+export default withService('user', andState())(Home)
