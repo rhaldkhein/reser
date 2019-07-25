@@ -11,7 +11,7 @@ An asynchronous DI framework for modular React and React-Native using [JService]
 - Abstraction for `react-redux`
 - For both `react` and `react-native`
 
-***JService** is a small and powerful pure javascript DI container that favors code over configuration, less opinionated, with dependency scoping, and no automatic resolution.*
+***JService** is a small, powerful, non-opinionated pure javascript DI container.*
 
 ## Install
 
