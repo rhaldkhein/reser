@@ -1,29 +1,20 @@
-import React from 'react'
-import { withNewService } from '../reser'
 
-function name(state = { asyncName: 'Foo' }, action) {
-  return state
+export default function Async() {
+  this.name = 'Async'
 }
 
-function AsyncPage(props) {
-  return <div>Async View</div>
+function InsideAsync(provider) {
+  console.log('InsideAsync', provider.get('store'));
 }
 
-function NewService() {
-  this.name = 'Kevin'
-}
+InsideAsync.setup = (p, s) => console.log('InsideAsync setup', p, s)
+InsideAsync.ready = (p, s) => console.log('InsideAsync ready', p, s)
 
-function registry(services) {
-  services.add(NewService, 'newservice')
-}
+Async.setup = (container) => {
+  console.log('setup', container)
+  container.createContainer(services => {
 
-export default class Async {
+    services.add(InsideAsync, 'inside')
 
-  static reducer = name
-  static persist = true
-
-  title = 'Async Service'
-
-  View = withNewService(registry)(AsyncPage)
-
+  }).start().then(provider => provider.get('inside'))
 }

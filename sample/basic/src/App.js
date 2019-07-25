@@ -1,62 +1,26 @@
 import React from 'react';
 import { withContainer } from './reser'
 import registry from './registry'
-import { BrowserRouter as Router, Route, Link } from "react-router-dom"
-import Home from './Home'
 
-function Index() {
-  return <h2>Home</h2>;
-}
+import Home from './routes/Home'
 
-function About() {
-  return <h2>About</h2>;
-}
-
-function Users() {
-  return <h2>Users</h2>;
-}
-
-function App({ container }) {
-  // console.log(container)
-  const util = container.provider.get('util')
-  const res = util.getStatics('mergetest', {
-    merge: true
-  })
-  console.log(res);
-  util.loadAsyncServices().then(res => {
-    console.log(res)
-  })
-  return (
-    container.isReady &&
-    <div className="App">
-      <Router>
-        <header>
-          <h1>Reser</h1>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/about">About</Link>
-              </li>
-              <li>
-                <Link to="/users">Users</Link>
-              </li>
-            </ul>
-          </nav>
-        </header>
-        <div>
-          <Route path="/about" component={About} />
-          <Route path="/users" component={Users} />
-          <Route path="/" exact component={Index} />
-        </div>
-        <div>
-          <Home />
-        </div>
-      </Router>
-    </div>
-  )
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+    console.log('App', props.container)
+    const async = props.container.provider.get('async')
+    // console.log('A', async);
+    // async.then(a => console.log(a))
+    async().then(i => console.log('A', i))
+  }
+  render() {
+    return (
+      this.props.container.isReady &&
+      <div className="App">
+        <Home />
+      </div>
+    )
+  }
 }
 
 export default withContainer(registry)(App);

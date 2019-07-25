@@ -4,12 +4,14 @@ An asynchronous DI framework for modular React and React-Native using [JService]
 
 **Key Features**
 
-- Dependency Injection
-- Asynchronous Service
-- Code Splitting
-- Persistent `redux` State
+- Dependency injection
+- Asynchronous service
+- Code splitting
+- Persistent `redux` state
 - Abstraction for `react-redux`
-- For `react` and `react-native`
+- For both `react` and `react-native`
+
+***JService** is a small and powerful pure javascript DI container that favors code over configuration, less opinionated, with dependency scoping, and no automatic resolution.*
 
 ## Install
 
@@ -58,20 +60,7 @@ function App({ container }) {
   return (
     container.isReady &&
     <div className="App">
-      <Router>
-        <header>
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/about">About</Link></li>
-            <li><Link to="/users">Users</Link></li>
-          </ul>
-        </header>
-        <div>
-          <Route path="/" exact component={Home} />
-          <Route path="/about" component={About} />
-          <Route path="/users" component={Users} />
-        </div>
-      </Router>
+      <Home />
     </div>
   )
 }
@@ -93,7 +82,7 @@ function reducer(state = initial, action) {
   // ...
 }
 
-class UserService {
+export default class UserService {
   static service = 'user'
   static reducer = reducer
   static persist = true // Save state to local storage
@@ -171,5 +160,4 @@ export default withService('user', andState())(Home)
 
 ## License
 
-MIT
-
+MIT License - Copyright (c) 2019 RhaldKhein
