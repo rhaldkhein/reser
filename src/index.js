@@ -12,7 +12,7 @@ import StoreService from './services/store'
 // DI container contexts
 const ContainerContext = React.createContext()
 
-class ReactServices extends BaseContainer {
+class Container extends BaseContainer {
 
   constructor() {
     super()
@@ -27,7 +27,7 @@ class ReactServices extends BaseContainer {
 }
 
 function createContainer() {
-  return new ReactServices()
+  return new Container()
     .build(services => {
       services.add(UtilService)
       services.add(StorageService)
@@ -75,6 +75,19 @@ export function withContainer(registry) {
   }
 }
 
+export function withProvider(ChildComponent) {
+  return function (props) {
+    return React.createElement(ContainerContext.Consumer, null,
+      function ({ container }) {
+        return React.createElement(ChildComponent, {
+          provider: container.provider,
+          ...props
+        })
+      }
+    )
+  }
+}
+
 export function withService(...serviceNames) {
   return function (ChildComponent) {
     if (Array.isArray(serviceNames[serviceNames.length - 1])) {
@@ -84,9 +97,10 @@ export function withService(...serviceNames) {
     }
     return function (props) {
       return React.createElement(ContainerContext.Consumer, null,
-        function (ctx) {
+        function ({ container }) {
           return React.createElement(ChildComponent, {
-            services: ctx.container.provider.createServices(serviceNames),
+            provider: container.provider,
+            services: container.provider.createServices(serviceNames),
             ...props
           })
         }

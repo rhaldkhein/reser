@@ -60,7 +60,6 @@ class Home extends Component {
   }
 
   render() {
-    console.log(this.props.services)
     const currentUser = this.props.state.user
     // It will display `Hello, Foo!` or sign-in form
     return (
@@ -77,5 +76,4 @@ class Home extends Component {
 
 // Here we inject `user` service and its state.
 // Remove andState, if you only need the service.
-// export default withService('user', 'async', andState())(Home)
-export default withService('user', andState())(Home)
+export default withService('user', 'async', andState())(Home)
