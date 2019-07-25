@@ -1,6 +1,6 @@
 {
   "name": "reser",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An asynchronous DI framework for modular React and React-Native",
   "main": "lib/index.js",
   "scripts": {
