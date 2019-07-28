@@ -5,9 +5,7 @@ import ServiceCollection from './collection'
 import ServiceProvider from './provider'
 
 // Built-in services
-import UtilService from './services/util'
-import StorageService from './services/storage'
-import StoreService from './services/store'
+import { Util, Storage, Store } from './services'
 
 // DI container contexts
 const ContainerContext = React.createContext()
@@ -29,9 +27,9 @@ class Container extends BaseContainer {
 function createContainer() {
   return new Container()
     .build(services => {
-      services.add(UtilService)
-      services.add(StorageService)
-      services.add(StoreService)
+      services.add(Util)
+      services.add(Storage)
+      services.add(Store)
     })
 }
 
@@ -134,9 +132,5 @@ export {
   // HOC
   createContainer,
   and as andService,
-  and as andState,
-  // Services
-  StorageService,
-  StoreService,
-  UtilService
+  and as andState
 }
