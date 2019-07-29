@@ -6,13 +6,10 @@ import Home from './routes/Home'
 
 function App({ container }) {
   console.log(container);
-  const { Hello } = container.provider.get('hello')
-
   return (
     container.isReady &&
     <div className="App">
       <Home />
-      <Hello />
     </div>
   )
 }

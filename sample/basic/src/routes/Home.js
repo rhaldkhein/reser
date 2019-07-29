@@ -60,6 +60,7 @@ class Home extends Component {
   }
 
   render() {
+    console.log(this.props.services);
     const currentUser = this.props.state.user
     // It will display `Hello, Foo!` or sign-in form
     return (
