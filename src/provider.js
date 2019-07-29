@@ -17,9 +17,11 @@ class ServiceProvider extends BaseServiceProvider {
         let asyncInstance
         const { asyncService: Service, config } = serviceDesc
         if (isConstructor(Service)) {
-          if (Service.setup) Service.setup(this._collection.container)
-          if (Service.start) Service.setup(this)
-          if (Service.ready) Service.setup(this)
+          ((Service.start && Service.start(this)) || Promise.resolve())
+            .then(() => {
+              if (Service.ready) Service.ready(this)
+              this._callback(name)
+            })
           const store = this.service('store')
           store._persistService(Service, name)
           asyncInstance = new Service(
@@ -31,7 +33,6 @@ class ServiceProvider extends BaseServiceProvider {
         }
         serviceDesc.asyncInstance = asyncInstance
         serviceDesc.asyncFetching = null
-        this._callback(name)
         return asyncInstance
       })
     }
@@ -59,7 +60,12 @@ class ServiceProvider extends BaseServiceProvider {
         continue
       }
       const instance = this.service(name)
-      result[name] = isFunction(instance) ? null : instance
+      if (isFunction(instance)) {
+        instance()
+        result[name] = null
+      } else {
+        result[name] = instance
+      }
     }
     return result
   }
