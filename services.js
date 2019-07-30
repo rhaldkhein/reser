@@ -1,1 +1,1 @@
-exports = module.exports = require('./lib/services').default
+exports = module.exports = require('./lib/services')
