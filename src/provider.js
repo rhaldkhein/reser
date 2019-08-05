@@ -53,9 +53,9 @@ class ServiceProvider extends BaseServiceProvider {
   createServices(serviceNames) {
     let result = {}
     for (let i = 0; i < serviceNames.length; i++) {
-      const name = serviceNames[i]
+      const name = serviceNames[i].toLowerCase()
       const serviceDesc = this._collection.get(name)
-      if (serviceDesc.asyncInstance) {
+      if (serviceDesc && serviceDesc.asyncInstance) {
         result[name] = serviceDesc.asyncInstance
         continue
       }
