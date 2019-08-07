@@ -27,7 +27,7 @@
     "src"
   ],
   "dependencies": {
-    "jservice": "^0.1.33",
+    "jservice": "^0.1.34",
     "lodash.set": "^4.3.2"
   },
   "devDependencies": {

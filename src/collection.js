@@ -1,12 +1,12 @@
 import { ServiceCollection as BaseServiceCollection } from 'jservice'
-import { isConstructor } from './services/util/proto'
+import { isConstructor, isFunction } from './services/util/proto'
 
 class ServiceCollection extends BaseServiceCollection {
 
   _push(service, desc) {
-    if (desc.type === 0 && desc.typeof === 'function') {
+    if (desc.lazy) {
       service = (service => () => {
-        return service()().then(s => {
+        return service().then(s => {
           const Service = s.default
           if (isConstructor(Service) && Service.setup)
             Service.setup(this.container)
@@ -17,12 +17,17 @@ class ServiceCollection extends BaseServiceCollection {
     return super._push(service, desc)
   }
 
-  scoped() {
-    throw new Error('Scoped services are not supported yet')
-  }
-
-  transient() {
-    throw new Error('Transient services are not supported yet')
+  lazy(service, name, deps) {
+    if (!service) return
+    if (!name) throw new Error('Lazy service must have a name')
+    if (!isFunction(service)) throw new Error('Lazy service must be a function')
+    let desc = {
+      name,
+      deps,
+      lazy: true,
+      type: this.types.SINGLETON
+    }
+    this._push(service, desc)
   }
 
 }
