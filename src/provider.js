@@ -5,8 +5,8 @@ class ServiceProvider extends BaseServiceProvider {
 
   _callback = null
 
-  _getAsyncGetter(name, promise) {
-    const serviceDesc = this._collection.get(name)
+  _getAsyncGetter(serviceDesc, promise) {
+    const { name } = serviceDesc
     if (serviceDesc.asyncGetter) return serviceDesc.asyncGetter
     return serviceDesc.asyncGetter = () => {
       // Return existing instance
@@ -16,6 +16,8 @@ class ServiceProvider extends BaseServiceProvider {
       return serviceDesc.asyncFetching = promise.then(() => {
         let asyncInstance
         const { asyncService: Service, config } = serviceDesc
+        const serviceProvider = this._createServiceProvider(serviceDesc)
+        const serviceConfig = isFunction(config) ? config(this) : config
         if (isConstructor(Service)) {
           ((Service.start && Service.start(this)) || Promise.resolve())
             .then(() => {
@@ -24,12 +26,11 @@ class ServiceProvider extends BaseServiceProvider {
             })
           const store = this.service('store')
           store._persistService(Service, name)
-          asyncInstance = new Service(
-            this._createServiceProvider(serviceDesc),
-            isFunction(config) ? config(this) : config
-          )
+          asyncInstance = new Service(serviceProvider, serviceConfig)
         } else {
-          asyncInstance = isFunction(Service) ? Service() : Service
+          asyncInstance = isFunction(Service) ?
+            Service(serviceProvider, serviceConfig) :
+            Service
         }
         serviceDesc.asyncInstance = asyncInstance
         serviceDesc.asyncFetching = null
@@ -39,8 +40,9 @@ class ServiceProvider extends BaseServiceProvider {
   }
 
   _createService(name) {
+    const serviceDesc = this._collection.get(name)
     const instance = super._createService(name)
-    return instance instanceof Promise ? this._getAsyncGetter(name, instance) : instance
+    return serviceDesc && serviceDesc.lazy ? this._getAsyncGetter(serviceDesc, instance) : instance
   }
 
   setAsyncLoadCallback(callback) {

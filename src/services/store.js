@@ -134,10 +134,6 @@ export default class Store {
     return name ? state[name] : state
   }
 
-  state(name) {
-    return () => this.base.getState()[name]
-  }
-
   dispatch(action) {
     return this.base.dispatch(action)
   }
@@ -148,6 +144,10 @@ export default class Store {
 
   subscribe(listener) {
     return this.base.subscribe(listener)
+  }
+
+  get state() {
+    return this.base.getState()
   }
 
   static start(provider) {

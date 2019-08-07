@@ -24,7 +24,7 @@ export default class UserService {
   constructor(provider) {
     // Let's inject the built-in store service
     this.store = provider.service('store')
-    this.state = this.store.state('user')
+    this.state = this.store.state.user
   }
 
   getCurrentUser() {

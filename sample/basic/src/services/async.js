@@ -16,7 +16,11 @@ Async.setup = (container) => {
 
     services.add(InsideAsync, 'inside')
 
-  }).start().then(provider => provider.get('inside'))
+  }).start().then(provider => {
+    provider.get('inside')
+    const func = provider.get('func')
+    console.log('X', func);
+  })
 }
 
 Async.start = provider => {
