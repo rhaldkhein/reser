@@ -23,7 +23,7 @@ class Util {
     for (let i = 0; i < services.length; i++) {
       let service = services[i].value
       let value = service[prop]
-      if (value === undefined) continue
+      if (value === undefined || !service.enabled) continue
       if (options.merge) {
         Object.assign(result, value)
         continue
