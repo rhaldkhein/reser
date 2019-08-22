@@ -21,9 +21,10 @@ class Util {
     let result = {}
     names = this.invert(names)
     for (let i = 0; i < services.length; i++) {
-      let service = services[i].value
+      let desc = services[i]
+      let service = desc.value
       let value = service[prop]
-      if (value === undefined || !service.enabled) continue
+      if (value === undefined || !desc.enabled) continue
       if (options.merge) {
         Object.assign(result, value)
         continue
