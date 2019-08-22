@@ -112,7 +112,7 @@ export default class Store {
     let storage = this._storage
     let { get } = this._util
     let handleChange = () => {
-      let currentState = get(this.base.getState(), path)
+      let currentState = get(this.state, path)
       if (currentState !== lastState) {
         lastState = currentState
         // Write to storage
@@ -129,9 +129,8 @@ export default class Store {
     return this.base
   }
 
-  getState(name) {
-    const state = this.base.getState()
-    return name ? state[name] : state
+  getState() {
+    return this.state
   }
 
   dispatch(action) {
@@ -144,6 +143,10 @@ export default class Store {
 
   subscribe(listener) {
     return this.base.subscribe(listener)
+  }
+
+  stateOf(name) {
+    return this.state[name]
   }
 
   get state() {
