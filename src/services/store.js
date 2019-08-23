@@ -125,6 +125,10 @@ export default class Store {
     return unsubscribe
   }
 
+  get isReady() {
+    return !!this.base
+  }
+
   getStore() {
     return this.base
   }
