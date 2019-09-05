@@ -16,7 +16,7 @@ An asynchronous DI framework for modular React and React-Native using [JService]
 ## Install
 
 ```sh
-npm install reser
+npm install reser redux react-redux
 ```
 
 ## Basic Usage
