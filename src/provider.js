@@ -1,5 +1,5 @@
 import { ServiceProvider as BaseServiceProvider } from 'jservice'
-import { isFunction, isConstructor } from './services/util/proto'
+import { isConstructor, isFunction } from 'jservice-common/lib/util/proto'
 
 class ServiceProvider extends BaseServiceProvider {
 

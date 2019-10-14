@@ -1,5 +1,5 @@
 import { ServiceCollection as BaseServiceCollection } from 'jservice'
-import { isConstructor, isFunction } from './services/util/proto'
+import { isConstructor, isFunction } from 'jservice-common/lib/util/proto'
 
 class ServiceCollection extends BaseServiceCollection {
 

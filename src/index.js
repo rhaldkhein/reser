@@ -3,9 +3,8 @@ import { connect, Provider } from 'react-redux'
 import BaseContainer from 'jservice'
 import ServiceCollection from './collection'
 import ServiceProvider from './provider'
-
-// Built-in services
-import { Util, Storage, Store } from './services'
+import { Util } from 'jservice-common'
+import { Storage, Store } from 'jservice-frontend'
 
 // DI container contexts
 const ContainerContext = React.createContext()
