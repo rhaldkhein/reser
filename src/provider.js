@@ -15,10 +15,12 @@ class ServiceProvider extends BaseServiceProvider {
       // Create new instance
       return serviceDesc.asyncFetching = promise.then(() => {
         let asyncInstance
-        const { asyncService: Service, config } = serviceDesc
-        const serviceProvider = this._createServiceProvider(serviceDesc)
+        const { asyncService: Service, config, deps } = serviceDesc
+        const desc = { name: serviceDesc.name, service: Service }
         const serviceConfig = isFunction(config) ? config(this) : config
-        if (isConstructor(Service)) {
+        if (deps) {
+          asyncInstance = deps(this, serviceConfig, desc)
+        } else if (isConstructor(Service)) {
           ((Service.start && Service.start(this)) || Promise.resolve())
             .then(() => {
               if (Service.ready) Service.ready(this)
@@ -26,10 +28,10 @@ class ServiceProvider extends BaseServiceProvider {
             })
           const store = this.service('store')
           store._persistService(Service, name)
-          asyncInstance = new Service(serviceProvider, serviceConfig)
+          asyncInstance = new Service(this, serviceConfig, desc)
         } else {
           asyncInstance = isFunction(Service) ?
-            Service(serviceProvider, serviceConfig) :
+            Service(this, serviceConfig, desc) :
             Service
         }
         serviceDesc.asyncInstance = asyncInstance
