@@ -131,5 +131,8 @@ export {
   // HOC
   createContainer,
   and as andService,
-  and as andState
+  and as andState,
+  Util,
+  Storage,
+  Store
 }
