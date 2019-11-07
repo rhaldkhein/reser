@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { withService, andState } from '../reser'
+import Foo from '../components/Foo'
 
 class Home extends Component {
 
@@ -70,6 +71,7 @@ class Home extends Component {
             this.viewUser(currentUser) :
             this.viewForm()
         }
+        <Foo />
       </div>
     )
   }
