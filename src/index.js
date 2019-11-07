@@ -86,11 +86,46 @@ export function withProvider(ChildComponent) {
 }
 
 export function withService(...serviceNames) {
+  const first = serviceNames[0]
+  if (typeof first === 'object' && !Array.isArray(first))
+    return withServiceObject(first)
+  // Continue using services in arguments
   return function (ChildComponent) {
     if (Array.isArray(serviceNames[serviceNames.length - 1])) {
       const states = serviceNames.pop()
       ChildComponent = withState.apply(null,
         states.length ? states : serviceNames)(ChildComponent)
+    }
+    return function (props) {
+      return React.createElement(ContainerContext.Consumer, null,
+        function ({ container }) {
+          return React.createElement(ChildComponent, {
+            provider: container.provider,
+            services: container.provider.createServices(serviceNames),
+            ...props
+          })
+        }
+      )
+    }
+  }
+}
+
+export function withServiceObject(services) {
+  return function (ChildComponent) {
+    const serviceNames = Object.keys(services)
+      .filter(key => !!services[key])
+    const serviceStates = serviceNames
+      .filter(key => typeof services[key] === 'function')
+    if (serviceStates.length) {
+      ChildComponent = connect(
+        state => ({
+          state: serviceStates
+            .reduce((result, key) => {
+              result[key] = services[key](state[key])
+              return result
+            }, {})
+        })
+      )(ChildComponent)
     }
     return function (props) {
       return React.createElement(ContainerContext.Consumer, null,
