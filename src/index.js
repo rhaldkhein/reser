@@ -40,13 +40,14 @@ function mapStateToProps(serviceNames, state) {
   }, {})
 }
 
-export function withContainer(registry) {
+export function withContainer(registry, start) {
   return function (ChildComponent) {
     return class extends React.Component {
       constructor(props) {
         super(props)
         const container = createContainer().build(registry)
         container.provider.setAsyncLoadCallback(this.loaded)
+        if (start) start(container)
         container.start().then(() => this.loaded(''))
         this.state = { container, name: null }
       }
