@@ -50,3 +50,7 @@ export default class UserService {
   }
 
 }
+
+UserService.attach = function () {
+  console.log('Higher services attach');
+}
