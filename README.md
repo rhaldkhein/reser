@@ -1,6 +1,6 @@
 # Reser
 
-An asynchronous DI framework for modular React and React-Native using [JService](https://github.com/rhaldkhein/jservice).
+An asynchronous DI library for creating modular React and React-Native using [JService](https://github.com/rhaldkhein/jservice).
 
 It aims to provide maintainable code, clean file structure and thin components, through dependency injection and abstraction of react-redux.
 
