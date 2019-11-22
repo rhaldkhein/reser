@@ -40,27 +40,61 @@ function mapStateToProps(serviceNames, state) {
   }, {})
 }
 
-export function withContainer(registry, start) {
+function withHigherContainer(ChildComponent) {
+  return function (props) {
+    return React.createElement(ContainerContext.Consumer, null,
+      function (contextValue) {
+        return React.createElement(ChildComponent, {
+          container: contextValue && contextValue.container,
+          ...props
+        })
+      }
+    )
+  }
+}
+
+export function withContainer(registry, configure) {
   return function (ChildComponent) {
-    return class extends React.Component {
+    // Single event emitter for loading services
+    let _fn = null
+    function listen(fn) {
+      _fn = fn
+      return () => (_fn = null)
+    }
+    // Build up container
+    const container = createContainer().build(registry)
+    if (configure) configure(container)
+    let contextValue = { container }
+    const loaded = (name) => {
+      contextValue = { container }
+      _fn && _fn(name)
+    }
+    container.provider.setAsyncLoadCallback(loaded)
+    container.on('ready', loaded)
+
+    class ContainerComponent extends React.Component {
       constructor(props) {
         super(props)
-        const container = createContainer().build(registry)
-        container.provider.setAsyncLoadCallback(this.loaded)
-        if (start) start(container)
-        container.start().then(() => this.loaded(''))
-        this.state = { container, name: null }
+        // Contains higher container
+        if (!container.parent && props.container)
+          container.setParent(props.container)
+        // Start own local container
+        container.start()
+        this.off = listen(name => this.setState({ name }))
       }
-      loaded = name => this.setState({ name })
+      componentWillUnmount() {
+        this.off()
+        this.off = null
+      }
       render() {
-        const store = this.state.container.provider.service('store').getStore()
-        const childElement = React.createElement(ChildComponent, {
-          container: this.state.container,
-          ...this.props
-        })
+        const store = container.provider.service('store').getStore()
+        const childElement = React.createElement(
+          ChildComponent,
+          { ...this.props, container }
+        )
         return React.createElement(
           ContainerContext.Provider,
-          { value: this.state },
+          { value: contextValue },
           !store ? childElement :
             React.createElement(
               Provider,
@@ -70,6 +104,7 @@ export function withContainer(registry, start) {
         )
       }
     }
+    return withHigherContainer(ContainerComponent)
   }
 }
 
